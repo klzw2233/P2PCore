@@ -68,7 +68,7 @@ P2P 通信里真正难的从来不是"把字节送过去",而是两件事:
 
 两者都不掌握密钥。自建的理由见 [ADR-0001](./docs/adr/0001-no-metadata-privacy.md):我们接受服务端掌握通信关系图,但那必须是自己的服务端。
 
-> Relay 地址硬编码在客户端配置中。开发期可用公共设施,**发布前必须切换到自建**,越晚成本越高。
+> 生产必须在配置里提供自建 Relay URL,默认**不是** n0 公共设施。开发期可显式 opt-in 公共 Relay。越晚切到自建,客户端配置的迁移成本越高。
 
 ---
 
@@ -178,11 +178,12 @@ SAS 两端各自本地计算,Trust State 本地存储,公钥就在 Peer ID 里�
 ├── CLAUDE.md           ← 给 Claude Code 的仓库级指引
 ├── docs/
 │   ├── adr/            ← 架构决策记录
+│   ├── architecture-review.md  ← 审阅发现,不是第二份 README
 │   └── agents/         ← issue tracker / 三方约定
 ├── crates/
 │   ├── p2p-trust/      ← 待创建
 │   └── p2p-core/       ← 待创建
-└── notes/              ← 学习笔记(待创建)
+└── notes/              ← 学习者导读
 ```
 
 ---
