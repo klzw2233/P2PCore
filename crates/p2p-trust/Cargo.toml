@@ -10,3 +10,7 @@ description = "Synchronous trust layer: Identity Key, Peer ID, SAS, Trust State.
 workspace = true
 
 [dependencies]
+ed25519-dalek = { version = "2", default-features = false, features = ["std", "rand_core", "zeroize"] }
+rand_core = { version = "0.6", default-features = false, features = ["getrandom"] }
+sha2 = { version = "0.10", default-features = false, features = ["std"] }
+zeroize = { version = "1", default-features = false, features = ["zeroize_derive"] }
