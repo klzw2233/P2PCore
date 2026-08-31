@@ -70,7 +70,7 @@ _Avoid_: 信任等级、白名单
 
 ### 安全性质
 
-这四个词必须严格区分,不可混用为笼统的"安全"。
+这五个词必须严格区分,不可混用为笼统的"安全"。
 
 **Content Confidentiality(内容机密性)**:
 Session 中传输的数据只有两端可读。**这是本项目的核心承诺**,对被动监听者、恶意服务端、Relay 一律成立。
@@ -79,8 +79,13 @@ Session 中传输的数据只有两端可读。**这是本项目的核心承诺*
 每一端都确信对端持有其所声称的 Identity Key。这是最容易做错的一环,且依赖 Verification 而非 Key Directory。
 
 **Forward Secrecy(前向保密)**:
-Identity Key 日后泄露,不能用于解密此前已捕获的 Session 流量。
+Identity Key 日后泄露,不能用于解密此前已捕获的 Session 流量。对手是经典的,拿到的是长期身份密钥。不覆盖量子破密钥交换,那是 Harvest-Now Resistance。
+
+**Harvest-Now Resistance(先存后破抗性)**:
+对手今天录下 Session 密文,量子计算机成熟后破的是**当时的密钥交换**,也读不出内容。兑现方式是 Session 握手 prefer 混合 KEM(`X25519MLKEM768`),见 [ADR-0007](./docs/adr/0007-prefer-hybrid-pq-kx.md)。
+**不包含** Identity Key 抗量子:Peer ID 仍是 Ed25519 公钥,量子破签名明确不做。
+_Avoid_: 抗量子、量子安全、post-quantum(笼统使用会让人以为身份也抗量子)
 
 **Metadata Privacy(元数据隐私)**:
 第三方无法得知"谁在与谁通信、何时、通信量多少"。
-**本项目明确不提供这项性质。** Signaling Server 必然知晓 Peer 之间的通信关系图。任何声称本项目"完全匿名"的表述都是错误的。
+**本项目明确不提供这项性质。** Discovery Server 与 Relay 必然知晓 Peer 之间的通信关系图。任何声称本项目"完全匿名"的表述都是错误的。

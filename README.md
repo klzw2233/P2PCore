@@ -33,10 +33,13 @@ P2P 通信里真正难的从来不是"把字节送过去",而是两件事:
 | b | 恶意或被入侵的服务端 | ✅ **结构上消除** |
 | c | 主动中间人(篡改、重放、降级) | ✅ 防御 |
 | e | 端点密钥泄露 | ✅ 前向保密 |
+| g | Harvest-now / 量子破密钥交换 | ✅ 混合 KEM([ADR-0007](./docs/adr/0007-prefer-hybrid-pq-kx.md)) |
 | d | 元数据隐私 | ❌ **明确不提供**([ADR-0001](./docs/adr/0001-no-metadata-privacy.md)) |
-| f | 抗审查、流量分析 | ❌ 不做,尽量保留加装接口 |
+| f | 抗审查、流量分析 | ❌ 不做;混淆不是稳定承诺,见 [ADR-0002](./docs/adr/0002-transport-on-iroh.md) |
 
 > ⚠️ **不得对外宣称本项目提供"匿名"或"无法追踪"。** 准确的措辞是:**服务端无法读取通信内容**。Discovery Server 与 Relay 必然掌握完整的通信关系图。
+>
+> ⚠️ **不得对外宣称本项目"抗量子"或"量子安全"。** 准确的措辞是:**Session 握手 prefer 混合 KEM,Identity Key 仍是 Ed25519。**
 
 ---
 
@@ -50,7 +53,7 @@ P2P 通信里真正难的从来不是"把字节送过去",而是两件事:
 ├─────────────────────────────────────────────┤
 │  p2p-trust  纯逻辑 · 零网络 · 同步            │  ← 项目的核心价值
 ├─────────────────────────────────────────────┤
-│  iroh 1.10  QUIC · 打洞 · Relay · Discovery  │  ← 外部依赖
+│  iroh 1.1.0 QUIC · 打洞 · Relay · Discovery  │  ← 外部依赖
 └─────────────────────────────────────────────┘
 ```
 
@@ -122,7 +125,8 @@ SAS 两端各自本地计算,Trust State 本地存储,公钥就在 Peer ID 里�
 
 | 项 | 决定 | 依据 |
 |---|---|---|
-| 传输层 | iroh 1.10,不自研 | [ADR-0002](./docs/adr/0002-transport-on-iroh.md) |
+| 传输层 | iroh 1.1.0,不自研 | [ADR-0002](./docs/adr/0002-transport-on-iroh.md) |
+| Session KX | prefer `X25519MLKEM768`;身份仍 Ed25519 | [ADR-0007](./docs/adr/0007-prefer-hybrid-pq-kx.md) |
 | 身份粒度 | 一个 Identity Key = **一台设备**,不是一个人 | [ADR-0003](./docs/adr/0003-identity-per-device.md) |
 | 公钥目录 | **不存在** | [ADR-0004](./docs/adr/0004-no-key-directory.md) |
 | crate 划分 | 两个,边界由编译器强制 | [ADR-0005](./docs/adr/0005-two-crate-boundary.md) |
@@ -145,6 +149,7 @@ SAS 两端各自本地计算,Trust State 本地存储,公钥就在 Peer ID 里�
 - **用户名 / 公钥目录** —— 应用语义,且是唯一的结构性弱点
 - **浏览器支持** —— 会强制整个传输层绑定 WebRTC
 - **群组加密** —— 需要 MLS
+- **量子破身份** —— Identity Key 保持 Ed25519;PQ 签名会推翻 Peer ID / SAS / TrustStore
 
 **"一台设备一个身份"的诚实代价**:双方各有 N 台设备时,人工验证是 N² 的成本。可接受,但必须向上层应用说明。
 
@@ -154,7 +159,7 @@ SAS 两端各自本地计算,Trust State 本地存储,公钥就在 Peer ID 里�
 
 这些不是建议,是"安全第一"的兑现方式:
 
-- **威胁模型 a/b/c/e 每一条都必须有一个"攻击者视角"的对抗性测试**,断言攻击失败。这是把威胁模型从文档变成代码的唯一手段。
+- **威胁模型 a/b/c/e/g 每一条都必须有一个"攻击者视角"的对抗性测试**,断言攻击失败。这是把威胁模型从文档变成代码的唯一手段。g 测的是 provider 要约顺序与禁止 0-RTT,不 downcast 握手。
 - 核心 crate 加 `#![forbid(unsafe_code)]`
 - CI 跑 `cargo-deny` / `cargo-audit`。**依赖链漏洞是比密码学缺陷现实得多的风险。**
 - CI 断言 `p2p-trust` 的依赖树中没有网络库
@@ -204,3 +209,4 @@ SAS 两端各自本地计算,Trust State 本地存储,公钥就在 Peer ID 里�
 | [ADR-0004](./docs/adr/0004-no-key-directory.md) | 移除公钥目录 |
 | [ADR-0005](./docs/adr/0005-two-crate-boundary.md) | 两个 crate 的硬边界 |
 | [ADR-0006](./docs/adr/0006-no-wire-protocol.md) | 信任层零线上协议 |
+| [ADR-0007](./docs/adr/0007-prefer-hybrid-pq-kx.md) | Session prefer 混合 PQ;身份仍 Ed25519 |
