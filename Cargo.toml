@@ -1,0 +1,12 @@
+[workspace]
+members = ["crates/p2p-trust", "crates/p2p-core"]
+resolver = "2"
+
+[workspace.package]
+edition = "2024"
+license = "MIT OR Apache-2.0"
+rust-version = "1.91"
+version = "0.1.0"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"

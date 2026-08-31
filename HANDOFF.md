@@ -1,7 +1,7 @@
 # 工作状态交接
 
 **最后更新:2026-09-01**
-**当前阶段:设计完成(含 iroh 核实与 ADR-0007),尚未写一行代码。实现入口:[#1](https://github.com/klzw2233/P2PCore/issues/1) → [#2](https://github.com/klzw2233/P2PCore/issues/2)。**
+**当前阶段:workspace 已立(#5);信任逻辑尚未写。实现入口:[#6](https://github.com/klzw2233/P2PCore/issues/6) → [#7](https://github.com/klzw2233/P2PCore/issues/7) → [#8](https://github.com/klzw2233/P2PCore/issues/8) → [#2](https://github.com/klzw2233/P2PCore/issues/2)。**
 
 本文件供接手的 Claude Code 会话阅读。
 
@@ -30,9 +30,9 @@
 
 ## 未开始
 
-- ❌ 代码。**一行都没有。** `crates/` 目录尚不存在
-- ❌ `Cargo.toml` / workspace
-- ❌ CI 配置
+- ✅ 代码:workspace + `p2p-trust` / `p2p-core` 空壳(#5);信任逻辑尚未写
+- ✅ `Cargo.toml` / workspace
+- ✅ CI:ubuntu + windows、`cargo-deny`(禁 p2p-trust 网络库)、`cargo-audit`
 - ✅ `notes/` 学习者导读(不是规格)
 
 ---
@@ -75,9 +75,11 @@
 
 1. ~~核实 iroh 三件事实~~ ✅
 2. ~~GitHub 远程~~ ✅ `klzw2233/P2PCore`
-3. 按用户的工作流:**建功能分支,不在 `main` 上开发**
-4. 实现 [#1](https://github.com/klzw2233/P2PCore/issues/1):workspace + `p2p-trust` + CI
-5. 实现 [#2](https://github.com/klzw2233/P2PCore/issues/2):`p2p-core` 接 iroh + evaluate 门闩 + prefer 混合 PQ(`tls-aws-lc-rs`)
+3. ~~workspace + CI~~ ✅ [#5](https://github.com/klzw2233/P2PCore/issues/5) / PR #9
+4. [#6](https://github.com/klzw2233/P2PCore/issues/6) Identity Key / Peer ID / SAS
+5. [#7](https://github.com/klzw2233/P2PCore/issues/7) introduce / evaluate / mark_verified
+6. [#8](https://github.com/klzw2233/P2PCore/issues/8) 文件 KeyStore / TrustStore
+7. [#2](https://github.com/klzw2233/P2PCore/issues/2) `p2p-core` 接 iroh + evaluate 门闩 + prefer 混合 PQ
 
 > 顺序的逻辑:`p2p-trust` 零依赖、零网络、纯函数,**可以在完全不碰 iroh 的情况下写完并测透**。先把项目真正的核心价值做扎实,再接传输层。#2 被 #1 阻塞。
 

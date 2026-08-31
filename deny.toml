@@ -1,0 +1,36 @@
+# Used by CI as:
+#   cargo deny --manifest-path crates/p2p-trust/Cargo.toml check
+# Scope is p2p-trust only (ADR-0005). Do not run against the whole workspace
+# once p2p-core depends on iroh — that would falsely ban the transport crate.
+
+[graph]
+all-features = true
+
+[advisories]
+version = 2
+yanked = "deny"
+
+[licenses]
+version = 2
+allow = [
+    "MIT",
+    "Apache-2.0",
+]
+confidence-threshold = 0.8
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+deny = [
+    { crate = "iroh" },
+    { crate = "tokio" },
+    { crate = "quinn" },
+    { crate = "noq" },
+    { crate = "hyper" },
+    { crate = "reqwest" },
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]

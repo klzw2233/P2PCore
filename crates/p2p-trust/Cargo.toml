@@ -1,0 +1,12 @@
+[package]
+name = "p2p-trust"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Synchronous trust layer: Identity Key, Peer ID, SAS, Trust State. Zero network."
+
+[lints]
+workspace = true
+
+[dependencies]
