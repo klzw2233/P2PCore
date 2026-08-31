@@ -1,10 +1,6 @@
 # Issue tracker: GitHub
 
-Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
-
-> **Not yet wired up.** This repo has no git remote yet. Until `git remote -v` points at a
-> GitHub repo, `gh` has nothing to infer from and these commands will fail. Create the remote
-> first, then this file is accurate as written.
+Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all operations. Remote is `klzw2233/P2PCore`.
 
 ## Conventions
 

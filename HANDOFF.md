@@ -1,7 +1,7 @@
 # 工作状态交接
 
-**最后更新:2026-08-31**
-**当前阶段:设计完成,尚未写一行代码。**
+**最后更新:2026-09-01**
+**当前阶段:设计完成(含 iroh 核实与 ADR-0007),尚未写一行代码。实现入口:[#1](https://github.com/klzw2233/P2PCore/issues/1) → [#2](https://github.com/klzw2233/P2PCore/issues/2)。**
 
 本文件供接手的 Claude Code 会话阅读。
 
@@ -9,7 +9,7 @@
 
 ## 给接手者的三条硬规则
 
-1. **先读 [CONTEXT.md](./CONTEXT.md),再读 [README.md](./README.md),再读 `docs/adr/` 全部六篇。** 所有用词以 CONTEXT.md 为准。
+1. **先读 [CONTEXT.md](./CONTEXT.md),再读 [README.md](./README.md),再读 `docs/adr/` 全部七篇。** 所有用词以 CONTEXT.md 为准。
 2. **不要重新讨论已定的决定。** 下面"已锁定"的每一项都经过完整论证并写进了 ADR。若确有充分理由推翻,写一篇新 ADR 标注 supersedes,不要静默改掉。
 3. **`p2p-trust` 的 `Cargo.toml` 里永远不能出现 iroh、tokio 或任何网络库。** 这是整个架构唯一由编译器保护的约束,打穿它等于废掉 ADR-0002 和 ADR-0005。
 
@@ -17,21 +17,21 @@
 
 ## 已完成
 
-一次完整的设计 grilling(17 个决策点),产出:
+一次完整的设计 grilling(17 个决策点),加上 iroh 核实与 PQ grilling,产出:
 
 | 文件 | 状态 |
 |---|---|
-| `CONTEXT.md` | ✅ 术语表,含参与者/服务端/连接/信任/安全性质五组 |
+| `CONTEXT.md` | ✅ 术语表,含参与者/服务端/连接/信任/安全性质(含 Harvest-Now Resistance) |
 | `README.md` | ✅ 完整架构文档 |
-| `docs/adr/0001` ~ `0006` | ✅ 六篇架构决策记录 |
+| `docs/adr/0001` ~ `0007` | ✅ 七篇架构决策记录 |
 | `docs/agents/*.md` | ✅ issue tracker / triage 标签 / domain docs 约定 |
 | `CLAUDE.md` | ✅ 仓库级指引 |
+| GitHub | ✅ `klzw2233/P2PCore`;issue #1 / #2 已发,`ready-for-agent` |
 
 ## 未开始
 
 - ❌ 代码。**一行都没有。** `crates/` 目录尚不存在
 - ❌ `Cargo.toml` / workspace
-- ❌ git 仓库(**当前目录不是 git 仓库**)
 - ❌ CI 配置
 - ❌ `notes/` 目录
 
@@ -43,8 +43,9 @@
 |---|---|
 | 范围 | 传输层完整核心,**不含任何应用语义** |
 | 语言 | Rust |
-| 威胁模型 | 防 a 被动监听 / b 恶意服务端 / c 主动 MITM / e 密钥泄露;**不做** d 元数据隐私、f 抗审查 |
-| 传输层 | iroh,不自研(ADR-0002) |
+| 威胁模型 | 防 a 被动监听 / b 恶意服务端 / c 主动 MITM / e 密钥泄露 / g harvest-now;**不做** d 元数据隐私、f 抗审查、量子破身份 |
+| 传输层 | iroh **1.1.0**,不自研(ADR-0002) |
+| Session KX | prefer `X25519MLKEM768`;Identity Key 仍 Ed25519(ADR-0007) |
 | 在线模型 | 双方必须同时在线,**无离线投递** |
 | 平台 | 桌面 + 移动,**不支持浏览器**(这解放了 WebRTC 依赖) |
 | 身份粒度 | 一个 Identity Key = 一台设备;承诺可演进到主身份背书但现在不做(ADR-0003) |
@@ -56,61 +57,29 @@
 | 信任层协议 | **零线上协议**(ADR-0006) |
 | 移动端绑定 | 暂不做,但公开 API 恪守 FFI 可导出纪律 |
 | 存储 | `KeyStore` / `TrustStore` 两个 trait,默认实现自带,平台原生由上层注入 |
-| 测试 | 威胁模型每条都要有对抗性测试 |
+| 测试 | 威胁模型每条都要有对抗性测试;g 测 provider 顺序 + 禁止 0-RTT |
 
 ---
 
-## 🔴 未决:必须在动工前核实的事实
+## iroh 核实结果(原"未决"三项,2026-09-01 已关闭)
 
-Windows 环境下 web 工具持续返回 429,以下事实**始终未能核实**。请在 Ubuntu 上重新确认:
+来源:iroh v1.1.0 源码与 README,写入 ADR-0002。
 
-### 1. iroh 能否包装/替换底层 UDP socket?(优先级最高)
-
-**为什么重要**:这决定威胁模型里的 f(抗审查/流量混淆)以后能不能加。若不能,ADR-0001 中"保留可加装混淆层的接口"这一条无法兑现,需要更新 ADR-0002 的风险条目。
-
-查:`docs.rs/iroh` 中 `Endpoint` 的构造选项,找 custom socket / pluggable transport / bring-your-own-socket。
-
-### 2. `noq` 是什么?
-
-iroh 的 README 写明它用 `noq`(`github.com/n0-computer/noq`)建立 QUIC 连接,**而不是 quinn**。名字疑似 "Noise over QUIC"。
-
-**为什么重要**:若它用 Noise 替代了 TLS 1.3,那 ADR-0002 里"TLS 1.3 带来 Forward Secrecy"的表述需要改写,前向保密的具体性质要重新确认(威胁模型 e 依赖它)。
-
-### 3. 顺带确认
-
-- iroh 当前版本是否仍为 **1.10**,API 是否稳定(用户报告 1.10,未亲自核实)
-- `iroh-relay` / `iroh-dns-server` 自建的实际部署文档
-- `uniffi` 现状(移动端绑定时才需要,不阻塞)
-
----
-
-## 环境变化:Windows → Ubuntu
-
-| | Windows(原) | Ubuntu(新) |
-|---|---|---|
-| Rust | ❌ 未安装 | ✅ 完整 |
-| gcc / 构建工具 | MinGW 14.1 | ✅ |
-| git | ✅ 已装 | 待确认 |
-| gh CLI | ✅ 已装,**但仓库无远程** | 待确认 |
-
-**注意**:`docs/agents/issue-tracker.md` 里的所有 `gh` 命令**目前全部失效**,因为没有 git 远程。建立远程仓库后即生效,届时请删掉该文件顶部的"尚未接通"提示块。
+1. **不能**包装底层 UDP socket。`CustomTransport` 存在但是 `unstable-custom-transports`,不受 semver 保护。混淆不进第一版。
+2. **`noq` 不是 Noise。** Quinn 的 fork,RFC 9001 / TLS 1.3 over QUIC。e 对 1-RTT 成立。
+3. 版本是 **1.1.0**,不是 1.10。自建文档:`iroh-relay` README、`iroh-dns-server` 的 config 示例。uniffi 不阻塞。
 
 ---
 
 ## 建议的下一步顺序
 
-1. **核实上面三个未决事实**,按结果更新 ADR-0002
-2. **`git init`** + 建 GitHub 远程 + 首次提交(把现有文档提交到 `main`)
+1. ~~核实 iroh 三件事实~~ ✅
+2. ~~GitHub 远程~~ ✅ `klzw2233/P2PCore`
 3. 按用户的工作流:**建功能分支,不在 `main` 上开发**
-4. 建 workspace:`crates/p2p-trust` + `crates/p2p-core`,并**立刻**给 `p2p-trust` 加 `#![forbid(unsafe_code)]`
-5. **从 `p2p-trust` 开始,先写测试**:
-   - SAS 推导的确定性 + 两端一致性(重点测规范排序,这是最容易埋 bug 的地方)
-   - Trust State 状态机的全部迁移路径
-   - 威胁模型 a/b/c/e 各自的对抗性测试
-6. CI:ubuntu + windows 双平台,加 `cargo-deny` / `cargo-audit`,加"`p2p-trust` 依赖树中无网络库"的断言
-7. `p2p-core` 接 iroh —— **放在最后**,因为它是唯一需要网络和外部依赖的部分
+4. 实现 [#1](https://github.com/klzw2233/P2PCore/issues/1):workspace + `p2p-trust` + CI
+5. 实现 [#2](https://github.com/klzw2233/P2PCore/issues/2):`p2p-core` 接 iroh + evaluate 门闩 + prefer 混合 PQ(`tls-aws-lc-rs`)
 
-> 顺序的逻辑:`p2p-trust` 零依赖、零网络、纯函数,**可以在完全不碰 iroh 的情况下写完并测透**。先把项目真正的核心价值做扎实,再接传输层。
+> 顺序的逻辑:`p2p-trust` 零依赖、零网络、纯函数,**可以在完全不碰 iroh 的情况下写完并测透**。先把项目真正的核心价值做扎实,再接传输层。#2 被 #1 阻塞。
 
 ---
 
