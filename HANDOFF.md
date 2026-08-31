@@ -1,7 +1,7 @@
 # 工作状态交接
 
 **最后更新:2026-09-01**
-**当前阶段:设计完成(含 iroh 核实与 ADR-0007),尚未写一行代码。实现入口:[#1](https://github.com/klzw2233/P2PCore/issues/1) → [#2](https://github.com/klzw2233/P2PCore/issues/2)。**
+**当前阶段:workspace 已立(#5);信任逻辑尚未写。实现入口:[#6](https://github.com/klzw2233/P2PCore/issues/6) → [#7](https://github.com/klzw2233/P2PCore/issues/7) → [#8](https://github.com/klzw2233/P2PCore/issues/8) → [#2](https://github.com/klzw2233/P2PCore/issues/2)。**
 
 本文件供接手的 Claude Code 会话阅读。
 
@@ -30,9 +30,9 @@
 
 ## 未开始
 
-- ❌ 代码。**一行都没有。** `crates/` 目录尚不存在
-- ❌ `Cargo.toml` / workspace
-- ❌ CI 配置
+- ✅ 代码:workspace + `p2p-trust` / `p2p-core` 空壳(#5);信任逻辑尚未写
+- ✅ `Cargo.toml` / workspace
+- ✅ CI:ubuntu + windows、`cargo-deny`(禁 p2p-trust 网络库)、`cargo-audit`
 - ✅ `notes/` 学习者导读(不是规格)
 
 ---

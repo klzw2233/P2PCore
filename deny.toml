@@ -1,0 +1,34 @@
+# This file is used by `cargo deny check` in CI.
+# Keep p2p-trust free of network and async-runtime crates (ADR-0005).
+
+[graph]
+all-features = true
+
+[advisories]
+version = 2
+yanked = "deny"
+
+[licenses]
+version = 2
+allow = [
+    "MIT",
+    "Apache-2.0",
+]
+confidence-threshold = 0.8
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+deny = [
+    { crate = "iroh" },
+    { crate = "tokio" },
+    { crate = "quinn" },
+    { crate = "noq" },
+    { crate = "hyper" },
+    { crate = "reqwest" },
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]

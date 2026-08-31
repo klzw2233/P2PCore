@@ -4,7 +4,7 @@
 
 它是未来 P2P 应用的地基,本身**不包含任何应用语义**。
 
-> **当前状态:设计阶段完成,尚未开始编码。** 详见 [HANDOFF.md](./HANDOFF.md)。
+> **当前状态:workspace 已立,信任逻辑尚未写。** 实现入口 [#5](https://github.com/klzw2233/P2PCore/issues/5) 起。详见 [HANDOFF.md](./HANDOFF.md)。
 
 ---
 
@@ -181,8 +181,8 @@ SAS 两端各自本地计算,Trust State 本地存储,公钥就在 Peer ID 里�
 │   ├── architecture-review.md  ← 审阅发现,不是第二份 README
 │   └── agents/         ← issue tracker / 三方约定
 ├── crates/
-│   ├── p2p-trust/      ← 待创建
-│   └── p2p-core/       ← 待创建
+│   ├── p2p-trust/      ← 信任层(issue #1)
+│   └── p2p-core/       ← 空壳,接 iroh 见 issue #2
 └── notes/              ← 学习者导读
 ```
 
