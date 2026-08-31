@@ -1,5 +1,7 @@
-# This file is used by `cargo deny check` in CI.
-# Keep p2p-trust free of network and async-runtime crates (ADR-0005).
+# Used by CI as:
+#   cargo deny --manifest-path crates/p2p-trust/Cargo.toml check
+# Scope is p2p-trust only (ADR-0005). Do not run against the whole workspace
+# once p2p-core depends on iroh — that would falsely ban the transport crate.
 
 [graph]
 all-features = true

@@ -75,9 +75,11 @@
 
 1. ~~核实 iroh 三件事实~~ ✅
 2. ~~GitHub 远程~~ ✅ `klzw2233/P2PCore`
-3. 按用户的工作流:**建功能分支,不在 `main` 上开发**
-4. 实现 [#1](https://github.com/klzw2233/P2PCore/issues/1):workspace + `p2p-trust` + CI
-5. 实现 [#2](https://github.com/klzw2233/P2PCore/issues/2):`p2p-core` 接 iroh + evaluate 门闩 + prefer 混合 PQ(`tls-aws-lc-rs`)
+3. ~~workspace + CI~~ ✅ [#5](https://github.com/klzw2233/P2PCore/issues/5) / PR #9
+4. [#6](https://github.com/klzw2233/P2PCore/issues/6) Identity Key / Peer ID / SAS
+5. [#7](https://github.com/klzw2233/P2PCore/issues/7) introduce / evaluate / mark_verified
+6. [#8](https://github.com/klzw2233/P2PCore/issues/8) 文件 KeyStore / TrustStore
+7. [#2](https://github.com/klzw2233/P2PCore/issues/2) `p2p-core` 接 iroh + evaluate 门闩 + prefer 混合 PQ
 
 > 顺序的逻辑:`p2p-trust` 零依赖、零网络、纯函数,**可以在完全不碰 iroh 的情况下写完并测透**。先把项目真正的核心价值做扎实,再接传输层。#2 被 #1 阻塞。
 

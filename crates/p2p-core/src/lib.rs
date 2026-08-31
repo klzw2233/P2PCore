@@ -1,6 +1,7 @@
 //! Session API over [`p2p-trust`].
 //!
-//! Wiring to iroh belongs to a later spec. This crate must not depend on iroh.
+//! Wiring to iroh belongs to issue #2. This empty shell keeps the two-crate
+//! workspace boundary (ADR-0005) without depending on iroh yet.
 
 #![forbid(unsafe_code)]
 
