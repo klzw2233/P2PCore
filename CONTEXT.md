@@ -45,8 +45,8 @@ _Avoid_: 代理 / Proxy、转发服务器、Gateway
 _Avoid_: 连接 / Connection(指底层网络连接)、通道、会晤
 
 **Hole Punching(打洞)**:
-两个 Peer 借助 Signaling Server 协调,各自向对方发包以在自身 NAT 上打开映射,从而建立直连的过程。
-_Avoid_: NAT 穿透(指整个问题域,不指这个具体手段)、P2P 直连
+两个 Peer 借助 Discovery Server / Relay 提供的地址信息,各自向对方发包以在自身 NAT 上打开映射,从而建立直连的过程。本项目**没有**转发建连协商消息的信令角色;打洞由 iroh 实现。
+_Avoid_: NAT 穿透(指整个问题域,不指这个具体手段)、P2P 直连、信令 / Signaling(本项目不做)
 
 ### 信任
 

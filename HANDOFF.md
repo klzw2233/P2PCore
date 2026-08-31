@@ -33,7 +33,7 @@
 - ❌ 代码。**一行都没有。** `crates/` 目录尚不存在
 - ❌ `Cargo.toml` / workspace
 - ❌ CI 配置
-- ❌ `notes/` 目录
+- ✅ `notes/` 学习者导读(不是规格)
 
 ---
 
