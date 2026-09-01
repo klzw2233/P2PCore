@@ -217,10 +217,12 @@ mod tests {
 
     #[test]
     fn public_api_has_no_zero_rtt_entry() {
-        // Threat model e: application data is 1-RTT only. Scan production
-        // source only; this comment lives in the test module.
+        // Threat model e: application data is 1-RTT only. Cut at `mod tests`,
+        // not the first `#[cfg(test)]` (that is skip_tls_verify on RelayConfig).
         let src = include_str!("lib.rs");
-        let prod = src.split("#[cfg(test)]").next().expect("prod");
+        let prod = src.split("mod tests").next().expect("prod");
+        assert!(prod.contains("pub struct Endpoint"));
+        assert!(prod.contains("pub async fn bind"));
         assert!(!prod.contains("into_0rtt"));
         assert!(!prod.contains("ZeroRtt"));
         assert!(!prod.contains("SecretKey::generate"));
