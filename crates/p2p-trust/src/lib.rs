@@ -480,7 +480,7 @@ impl TrustStore for FileTrustStore {
 }
 
 /// Persist Trust State keyed by device public key.
-pub trait TrustStore {
+pub trait TrustStore: Send {
     fn get(&self, peer: &PeerId) -> Result<Option<TrustRecord>, TrustError>;
     fn put(&mut self, record: TrustRecord) -> Result<(), TrustError>;
 }

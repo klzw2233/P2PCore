@@ -28,3 +28,5 @@ Unknown ──扫码(可信渠道)──► Verified ──公钥对不上──
 ## 和 iroh 对接时容易想错的一点
 
 iroh 的 EndpointId 就是公钥。拨号成功,「我想连的人」和「握手认证的人」是同一个。TrustStore 里「这把钥匙变了」在 iroh 上几乎不会以 mismatch 出现;对方换设备 = **新 Peer ID** = 新的 TOFU。旧的 Verified 记录不会自动删。mismatch 门闩是给以后换传输层和测试用的。
+
+`p2p-core`(#14) 在握手后调用 `evaluate`:出站 `evaluate(intended, presented)`,入站 `intended = presented`。硬失败 / TOFU 告警都不把 Session 交给应用,并关掉底层连接。接受告警是显式 `accept_tofu_replacement`,只把新公钥记成 TOFU。
