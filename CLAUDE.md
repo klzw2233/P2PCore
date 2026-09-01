@@ -4,7 +4,7 @@ P2PCore 仓库级指引。细化全局 `~/.claude/CLAUDE.md`。
 
 ## 项目状态
 
-**workspace 已立(#5),信任逻辑尚未写。** 接手前先读 [HANDOFF.md](./HANDOFF.md)。
+**workspace 与 `p2p-trust` 已立(#5–#8);`p2p-core` Endpoint 在 #13。** 接手前先读 [HANDOFF.md](./HANDOFF.md)。
 
 ## 动手前必读(按顺序)
 

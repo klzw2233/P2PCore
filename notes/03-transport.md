@@ -22,6 +22,12 @@ prefer 不是 require:两个 `p2p-core` 端点会谈成混合 KEM;连 Relay 的 
 
 后端必须是 `tls-aws-lc-rs`(ring 没有 ML-KEM)。这是默认,不是 feature flag。
 
+## 现在能做什么(#13)
+
+`p2p-core::Endpoint::bind(key_store, trust_store, relay)` 用 KeyStore 里的 Identity Key 种子绑 iroh,读 `peer_id()`。还没有拨号 / 字节流(#14)。
+
+Relay:`RelayConfig::disabled()` 是默认;`custom(["https://…"])` 才出网;`n0_public()` 必须显式调用。测试走 iroh `test-utils` 进程内 Relay,不模拟真实 NAT。
+
 ## Session 长什么样(#2)
 
-一条已认证 QUIC 连接 + **一条**双向可靠字节流。没有多流、没有数据报、没有 0-RTT。双方必须同时在线。默认 Relay 不是 n0 公共设施。测试用 iroh `test-utils` 进程内 Relay,不模拟真实 NAT。
+一条已认证 QUIC 连接 + **一条**双向可靠字节流。没有多流、没有数据报、没有 0-RTT。双方必须同时在线。

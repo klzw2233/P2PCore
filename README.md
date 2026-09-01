@@ -4,7 +4,7 @@
 
 它是未来 P2P 应用的地基,本身**不包含任何应用语义**。
 
-> **当前状态:workspace 已立,信任逻辑尚未写。** 实现入口 [#5](https://github.com/klzw2233/P2PCore/issues/5) 起。详见 [HANDOFF.md](./HANDOFF.md)。
+> **当前状态:`p2p-trust` 已立;`p2p-core` Endpoint 在 [#13](https://github.com/klzw2233/P2PCore/issues/13)。** 详见 [HANDOFF.md](./HANDOFF.md)。
 
 ---
 
