@@ -4,7 +4,7 @@
 
 它是未来 P2P 应用的地基,本身**不包含任何应用语义**。
 
-> **当前状态:`p2p-trust` 已立;`p2p-core` Session 见 [#14](https://github.com/klzw2233/P2PCore/issues/14) / [#15](https://github.com/klzw2233/P2PCore/issues/15)。** 详见 [HANDOFF.md](./HANDOFF.md)。
+> **当前状态:`p2p-trust` 与 `p2p-core` Session 已立([#1](https://github.com/klzw2233/P2PCore/issues/1) / [#2](https://github.com/klzw2233/P2PCore/issues/2))。** 应用怎么接见 [notes/04-app-layer.md](./notes/04-app-layer.md)。
 
 ---
 

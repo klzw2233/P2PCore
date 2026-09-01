@@ -12,8 +12,8 @@ P2PCore 让两台设备在 NAT 后面建一条**双向认证的加密通道**,�
 
 ```
 应用(好友、UI、扫码)     ← 不是本仓库
-p2p-core   async Session,接 iroh  ← #14 / #15
-p2p-trust  同步,零网络    ← issue #1,真正自研的部分
+p2p-core   async Session,接 iroh  ← #2
+p2p-trust  同步,零网络    ← #1,真正自研的部分
 iroh 1.1.0                ← 打洞 / QUIC / Relay
 ```
 
