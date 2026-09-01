@@ -30,7 +30,7 @@
 - 人工验证 N²;TOFU 挡不住首次冒充;`mark_verified` 是应用的诚实调用
 - 默认 `tls-aws-lc-rs`(C/汇编)是 g 的代价;Windows CI 编不过就修 CI
 - 混淆 / BYO socket 不是稳定承诺
-- `p2p-core` 在 #1 里先占位是为 ADR-0005;#13 绑 Endpoint,#14 交出 Session。空壳不再是现状
+- `p2p-core` 在 #1 里先占位是为 ADR-0005;#13 绑 Endpoint,#14 交出 Session,#15 锁生命周期。空壳不再是现状
 
 ## 不要做的
 
