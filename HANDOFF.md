@@ -1,7 +1,7 @@
 # 工作状态交接
 
 **最后更新:2026-09-01**
-**当前阶段:#15 Session 生命周期/并发/对抗性 a/b/c 已实现(本分支)。下一步合入后:[#2](https://github.com/klzw2233/P2PCore/issues/2) 的剩余项(若有)。**
+**当前阶段:#1 / #2 均已合入。`p2p-trust` + `p2p-core` Session 可用。下一步是应用层或生产 Relay / Discovery(均不在本库)。**
 
 本文件供接手的 Claude Code 会话阅读。
 
@@ -26,14 +26,9 @@
 | `docs/adr/0001` ~ `0007` | ✅ 七篇架构决策记录 |
 | `docs/agents/*.md` | ✅ issue tracker / triage 标签 / domain docs 约定 |
 | `CLAUDE.md` | ✅ 仓库级指引 |
-| GitHub | ✅ `klzw2233/P2PCore`;issue #1 / #2 已发,`ready-for-agent` |
+| GitHub | ✅ `klzw2233/P2PCore`;#1 / #2 已关闭 |
 
-## 未开始
-
-- ✅ 代码:workspace + `p2p-trust` / `p2p-core` 空壳(#5);信任逻辑尚未写
-- ✅ `Cargo.toml` / workspace
-- ✅ CI:ubuntu + windows、`cargo-deny`(禁 p2p-trust 网络库)、`cargo-audit`
-- ✅ `notes/` 学习者导读(不是规格)
+应用层接法:[notes/04-app-layer.md](./notes/04-app-layer.md)。
 
 ---
 
@@ -81,9 +76,12 @@
 6. ~~[#8](https://github.com/klzw2233/P2PCore/issues/8) 文件 KeyStore / TrustStore~~ ✅
 7. ~~[#13](https://github.com/klzw2233/P2PCore/issues/13) `p2p-core` Endpoint 身份对齐 + prefer 混合 PQ + Relay 配置~~ ✅
 8. ~~[#14](https://github.com/klzw2233/P2PCore/issues/14) Session 拨号 / 接受 / 字节流 + 信任门闩~~ ✅
-9. ~~[#15](https://github.com/klzw2233/P2PCore/issues/15) Session 生命周期与对抗性 a/b/c~~ ✅ (本分支)
+9. ~~[#15](https://github.com/klzw2233/P2PCore/issues/15) Session 生命周期与对抗性 a/b/c~~ ✅
+10. ~~[#2](https://github.com/klzw2233/P2PCore/issues/2) p2p-core 规格~~ ✅ 子票全部合入
 
-> 顺序的逻辑:`p2p-trust` 零依赖、零网络、纯函数,**可以在完全不碰 iroh 的情况下写完并测透**。先把项目真正的核心价值做扎实,再接传输层。#2 被 #1 阻塞。
+> 顺序的逻辑:`p2p-trust` 零依赖、零网络、纯函数,**可以在完全不碰 iroh 的情况下写完并测透**。先把项目真正的核心价值做扎实,再接传输层。
+
+应用怎么接见 [notes/04-app-layer.md](./notes/04-app-layer.md)。本库明确不做:生产 `iroh-relay` / `iroh-dns-server` 部署、用户名、离线投递、多设备聚合、uniffi。
 
 ---
 

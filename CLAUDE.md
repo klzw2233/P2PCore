@@ -4,7 +4,7 @@ P2PCore 仓库级指引。细化全局 `~/.claude/CLAUDE.md`。
 
 ## 项目状态
 
-**workspace 与 `p2p-trust` 已立(#5–#8);`p2p-core` Session 拨号在 #14,生命周期/对抗性 a/b/c 在 #15。下一步 #2 收尾。** 接手前先读 [HANDOFF.md](./HANDOFF.md)。
+**#1 / #2 已合入。`p2p-trust` + `p2p-core` Session 可用。** 接手前先读 [HANDOFF.md](./HANDOFF.md)。应用层接法见 [notes/04-app-layer.md](./notes/04-app-layer.md)。
 
 ## 动手前必读(按顺序)
 
