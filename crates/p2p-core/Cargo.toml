@@ -4,10 +4,17 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
-description = "Session API over the trust layer. Wiring to iroh is a later spec (issue #2)."
+description = "Session API over the trust layer, wired to iroh."
 
 [lints]
 workspace = true
 
 [dependencies]
 p2p-trust = { path = "../p2p-trust" }
+iroh = { version = "1.1.0", default-features = false, features = ["tls-aws-lc-rs"] }
+tokio = { version = "1", default-features = false, features = ["rt", "sync"] }
+rustls = { version = "0.23", default-features = false, features = ["std", "aws-lc-rs"] }
+
+[dev-dependencies]
+iroh = { version = "1.1.0", default-features = false, features = ["tls-aws-lc-rs", "test-utils"] }
+tokio = { version = "1", default-features = false, features = ["rt-multi-thread", "macros"] }
