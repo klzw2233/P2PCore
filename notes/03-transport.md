@@ -22,7 +22,7 @@ prefer 不是 require:两个 `p2p-core` 端点会谈成混合 KEM;连 Relay 的 
 
 后端必须是 `tls-aws-lc-rs`(ring 没有 ML-KEM)。这是默认,不是 feature flag。
 
-## 现在能做什么(#14)
+## 现在能做什么(#14 / #15)
 
 Relay:`RelayConfig::disabled()` 是默认;`custom(["https://…"])` 才出网;`n0_public()` 必须显式调用。测试走 iroh `test-utils` 进程内 Relay,不模拟真实 NAT。
 
@@ -30,6 +30,10 @@ Relay:`RelayConfig::disabled()` 是默认;`custom(["https://…"])` 才出网;`n
 
 `DialHints::relays(["https://…"])` 是无 Address Lookup 时的寻址提示(URL 字符串,不是 iroh 类型)。测试两端同一 runtime + 进程内 Relay。
 
-## Session 长什么样(#2 / #14)
+`Session::close` 后对端 `recv` 看到结束,再 `send` 失败。同一端点对同一 Peer 同时最多一条 Session,重复拨号是 `Error::AlreadyConnected`(close 后可再拨)。对端离线时 `dial` 在约 5 秒内以 `Error::PeerOffline` 结束。未配 Relay 且不可直连是 `Error::RelayUnreachable`(可据此断言默认不断 n0)。身份解锁失败是 `Error::UnlockFailed`,与 `evaluate` 拒绝分开。
 
-一条已认证 QUIC 连接 + **一条**双向可靠字节流。没有多流、没有数据报、没有 0-RTT。双方必须同时在线。生命周期/并发/对抗性 a/b/c 见 #15。
+对抗性 a:同一 Relay 上的旁路 Peer D 拿不到 A↔B 的字节(内容机密性由 TLS 1.3 提供,测试防的是误把明文交给旁路)。b:拨 B 得到的 remote 必须是 B。c:Mallory 没有 B 的私钥,无法作为 B 完成握手。
+
+## Session 长什么样(#2 / #14 / #15)
+
+一条已认证 QUIC 连接 + **一条**双向可靠字节流。没有多流、没有数据报、没有 0-RTT。双方必须同时在线。

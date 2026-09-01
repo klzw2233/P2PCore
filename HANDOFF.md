@@ -1,7 +1,7 @@
 # 工作状态交接
 
 **最后更新:2026-09-01**
-**当前阶段:#14 Session 拨号/接受/字节流 + 信任门闩已实现(本分支)。下一步合入后:[#15](https://github.com/klzw2233/P2PCore/issues/15) → [#2](https://github.com/klzw2233/P2PCore/issues/2)。**
+**当前阶段:#15 Session 生命周期/并发/对抗性 a/b/c 已实现(本分支)。下一步合入后:[#2](https://github.com/klzw2233/P2PCore/issues/2) 的剩余项(若有)。**
 
 本文件供接手的 Claude Code 会话阅读。
 
@@ -80,8 +80,8 @@
 5. ~~[#7](https://github.com/klzw2233/P2PCore/issues/7) introduce / evaluate / mark_verified~~ ✅
 6. ~~[#8](https://github.com/klzw2233/P2PCore/issues/8) 文件 KeyStore / TrustStore~~ ✅
 7. ~~[#13](https://github.com/klzw2233/P2PCore/issues/13) `p2p-core` Endpoint 身份对齐 + prefer 混合 PQ + Relay 配置~~ ✅
-8. ~~[#14](https://github.com/klzw2233/P2PCore/issues/14) Session 拨号 / 接受 / 字节流 + 信任门闩~~ ✅ (本分支)
-9. [#15](https://github.com/klzw2233/P2PCore/issues/15) Session 生命周期与对抗性 a/b/c
+8. ~~[#14](https://github.com/klzw2233/P2PCore/issues/14) Session 拨号 / 接受 / 字节流 + 信任门闩~~ ✅
+9. ~~[#15](https://github.com/klzw2233/P2PCore/issues/15) Session 生命周期与对抗性 a/b/c~~ ✅ (本分支)
 
 > 顺序的逻辑:`p2p-trust` 零依赖、零网络、纯函数,**可以在完全不碰 iroh 的情况下写完并测透**。先把项目真正的核心价值做扎实,再接传输层。#2 被 #1 阻塞。
 
