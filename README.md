@@ -4,7 +4,7 @@
 
 它是未来 P2P 应用的地基,本身**不包含任何应用语义**。
 
-> **当前状态:`p2p-trust` 已立;`p2p-core` Endpoint 在 [#13](https://github.com/klzw2233/P2PCore/issues/13)。** 详见 [HANDOFF.md](./HANDOFF.md)。
+> **当前状态:`p2p-trust` 已立;`p2p-core` Session 拨号/接受/字节流见 [#14](https://github.com/klzw2233/P2PCore/issues/14)。下一步 [#15](https://github.com/klzw2233/P2PCore/issues/15)。** 详见 [HANDOFF.md](./HANDOFF.md)。
 
 ---
 
@@ -182,7 +182,7 @@ SAS 两端各自本地计算,Trust State 本地存储,公钥就在 Peer ID 里�
 │   └── agents/         ← issue tracker / 三方约定
 ├── crates/
 │   ├── p2p-trust/      ← 信任层(issue #1)
-│   └── p2p-core/       ← 空壳,接 iroh 见 issue #2
+│   └── p2p-core/       ← Session API,接 iroh 见 issue #2 / #14
 └── notes/              ← 学习者导读
 ```
 

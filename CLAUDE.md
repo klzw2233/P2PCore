@@ -4,7 +4,7 @@ P2PCore 仓库级指引。细化全局 `~/.claude/CLAUDE.md`。
 
 ## 项目状态
 
-**workspace 与 `p2p-trust` 已立(#5–#8);`p2p-core` Endpoint 在 #13。** 接手前先读 [HANDOFF.md](./HANDOFF.md)。
+**workspace 与 `p2p-trust` 已立(#5–#8);`p2p-core` Session 拨号在 #14。下一步 #15。** 接手前先读 [HANDOFF.md](./HANDOFF.md)。
 
 ## 动手前必读(按顺序)
 
@@ -32,7 +32,7 @@ iroh **1.1.0**;`noq` 是 Quinn fork / RFC 9001,不是 Noise;不能 BYO UDP socke
 
 ### Issue tracker
 
-GitHub Issues via the `gh` CLI (**no git remote configured yet — all `gh` commands currently fail**). See `docs/agents/issue-tracker.md`.
+GitHub Issues via the `gh` CLI。Remote:`klzw2233/P2PCore`。See `docs/agents/issue-tracker.md`。
 
 ### Triage labels
 

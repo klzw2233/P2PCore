@@ -22,12 +22,14 @@ prefer 不是 require:两个 `p2p-core` 端点会谈成混合 KEM;连 Relay 的 
 
 后端必须是 `tls-aws-lc-rs`(ring 没有 ML-KEM)。这是默认,不是 feature flag。
 
-## 现在能做什么(#13)
-
-`p2p-core::Endpoint::bind(key_store, trust_store, relay)` 用 KeyStore 里的 Identity Key 种子绑 iroh,读 `peer_id()`。还没有拨号 / 字节流(#14)。
+## 现在能做什么(#14)
 
 Relay:`RelayConfig::disabled()` 是默认;`custom(["https://…"])` 才出网;`n0_public()` 必须显式调用。测试走 iroh `test-utils` 进程内 Relay,不模拟真实 NAT。
 
-## Session 长什么样(#2)
+`p2p-core::Endpoint::bind` 之后:`dial(peer_id, DialHints)` / `accept()` 得到一条 Session。握手后走 `p2p-trust::evaluate`;硬失败或告警都不把 Session 交给应用,并关掉底层连接。
 
-一条已认证 QUIC 连接 + **一条**双向可靠字节流。没有多流、没有数据报、没有 0-RTT。双方必须同时在线。
+`DialHints::relays(["https://…"])` 是无 Address Lookup 时的寻址提示(URL 字符串,不是 iroh 类型)。测试两端同一 runtime + 进程内 Relay。
+
+## Session 长什么样(#2 / #14)
+
+一条已认证 QUIC 连接 + **一条**双向可靠字节流。没有多流、没有数据报、没有 0-RTT。双方必须同时在线。生命周期/并发/对抗性 a/b/c 见 #15。
