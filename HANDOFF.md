@@ -1,7 +1,7 @@
 # 工作状态交接
 
 **最后更新:2026-09-01**
-**当前阶段:#6 已合;正在 #7 信任引擎。实现入口:[#7](https://github.com/klzw2233/P2PCore/issues/7) → [#8](https://github.com/klzw2233/P2PCore/issues/8) → [#2](https://github.com/klzw2233/P2PCore/issues/2)。**
+**当前阶段:#7 已合;正在 #8 文件存储。实现入口:[#8](https://github.com/klzw2233/P2PCore/issues/8) → [#2](https://github.com/klzw2233/P2PCore/issues/2)。**
 
 本文件供接手的 Claude Code 会话阅读。
 
@@ -77,7 +77,7 @@
 2. ~~GitHub 远程~~ ✅ `klzw2233/P2PCore`
 3. ~~workspace + CI~~ ✅ [#5](https://github.com/klzw2233/P2PCore/issues/5) / PR #9
 4. ~~[#6](https://github.com/klzw2233/P2PCore/issues/6) Identity Key / Peer ID / SAS~~ ✅
-5. [#7](https://github.com/klzw2233/P2PCore/issues/7) introduce / evaluate / mark_verified
+5. ~~[#7](https://github.com/klzw2233/P2PCore/issues/7) introduce / evaluate / mark_verified~~ ✅
 6. [#8](https://github.com/klzw2233/P2PCore/issues/8) 文件 KeyStore / TrustStore
 7. [#2](https://github.com/klzw2233/P2PCore/issues/2) `p2p-core` 接 iroh + evaluate 门闩 + prefer 混合 PQ
 
