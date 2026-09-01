@@ -14,3 +14,5 @@ ed25519-dalek = { version = "2", default-features = false, features = ["std", "r
 rand_core = { version = "0.6", default-features = false, features = ["getrandom"] }
 sha2 = { version = "0.10", default-features = false, features = ["std"] }
 zeroize = { version = "1", default-features = false, features = ["zeroize_derive"] }
+argon2 = { version = "0.5", default-features = false, features = ["std", "password-hash"] }
+chacha20poly1305 = { version = "0.10", default-features = false, features = ["std", "getrandom"] }
