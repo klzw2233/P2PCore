@@ -41,3 +41,12 @@ The five canonical roles, used verbatim as label strings. See `docs/agents/triag
 ### Domain docs
 
 Single-context: `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
+## Additional Skills
+
+If working task relates to Engineering, Architecture, Database or Security, load the corresponding file
+
+- [Engineering Principles](.ai/Engineering.md)
+- [Architecture Principles](.ai/Architecture.md)
+- [Database Principles](.ai/Database.md)
+- [Security Principles](.ai/Security.md)
