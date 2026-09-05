@@ -98,9 +98,11 @@ match endpoint.dial(peer, hints).await {
 
 可同时和 **不同** Peer 各持一条。
 
-## 字节流长什么样
+## 字节流与数据报
 
-一条 Session = 一条已认证 QUIC 连接 + **一条**可靠双向流。没有多流、没有数据报、没有 0-RTT。
+一条 Session = 一条已认证 QUIC 连接 + **一条**可靠双向流 + 不可靠数据报。没有多流、没有 0-RTT。
+
+### 可靠流（文字消息、文件块、信令）
 
 - `send(&[u8])`:写完才返回。对端按序收到。
 - `recv(&mut buf) -> usize`:`Ok(0)` 或 `Err` = 结束。
@@ -108,6 +110,26 @@ match endpoint.dial(peer, hints).await {
 - `close()` / `Drop`:对端下一次 recv 看到结束;再 send 失败。
 
 **帧格式是应用的事。** 库不帮你加长度前缀。两端必须约定同一套(例如 4 字节大端长度 + payload)。任一方离线,Session 就没了——不要在这里做离线队列。
+
+### 数据报（实时音视频）
+
+```rust
+// 发送一个不可靠数据报（成功不保证对端收到）
+session.send_datagram(opus_frame)?;
+
+// 阻塞接收一个数据报（等待直到数据到达或连接关闭）
+let frame = session.recv_datagram().await?;
+decode_and_play(frame);
+
+// 检查路径是否支持数据报及最大载荷
+if let Some(mtu) = session.max_datagram_size() {
+    // 根据 MTU 切片大帧或降码率
+}
+```
+
+- **不保证送达、不保证顺序、不保证不重复。** 应用自己处理（音视频：丢包弃帧 + 序号 + 周期关键帧）。
+- **与可靠流共存**：文字消息 / 文件块 / 通话信令继续走 `send`/`recv`，媒体帧走数据报。
+- **路径 MTU 自动探测**：`max_datagram_size()` 反映当前路径（直连 / Relay）的实际容量。Relay 路径可能不支持数据报（返回 `None`），应用据此决定降级策略。
 
 `accept()` 一次收一条传入拨号。要一直听,自己 `loop { accept().await }`。
 

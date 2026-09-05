@@ -9,6 +9,7 @@ use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
+use bytes::Bytes;
 use iroh::endpoint::{Connection, RecvStream, RelayMode, SendStream, presets};
 use iroh::{Endpoint as IrohEndpoint, EndpointAddr, SecretKey};
 use p2p_trust::{
@@ -435,6 +436,22 @@ impl Session {
 
     pub async fn recv_exact(&mut self, buf: &mut [u8]) -> Result<(), Error> {
         self.recv.read_exact(buf).await.map_err(|_| Error::Io)
+    }
+
+    /// Send an unreliable datagram. Success does not guarantee delivery.
+    pub fn send_datagram(&self, data: &[u8]) -> Result<(), Error> {
+        self.conn.send_datagram(Bytes::copy_from_slice(data)).map_err(|_| Error::Io)
+    }
+
+    /// Receive one datagram. Awaits until a datagram arrives or connection closes.
+    pub async fn recv_datagram(&self) -> Result<Vec<u8>, Error> {
+        let bytes = self.conn.read_datagram().await.map_err(|_| Error::Io)?;
+        Ok(bytes.to_vec())
+    }
+
+    /// Maximum datagram payload size (bytes) this path supports. None = path does not support datagrams.
+    pub fn max_datagram_size(&self) -> Option<usize> {
+        self.conn.max_datagram_size()
     }
 
     /// End this Session. The peer observes end on the next recv; later send fails.
@@ -995,6 +1012,91 @@ mod tests {
         trio.a.close().await;
         trio.b.close().await;
         trio.c.close().await;
+    }
+
+    #[tokio::test]
+    async fn datagram_bidirectional_exchange() {
+        // Probe: verify datagram send/recv works over in-process relay path.
+        let pair = pair().await;
+        let b_id = pair.b.peer_id();
+        let (sa, sb) = tokio::join!(pair.a.dial(b_id, hints(&pair.url)), pair.b.accept());
+        let sa = sa.expect("dial");
+        let sb = sb.expect("accept");
+
+        // Assert path supports datagrams
+        let mtu_a = sa.max_datagram_size().expect("path should support datagrams");
+        let mtu_b = sb.max_datagram_size().expect("path should support datagrams");
+        assert!(mtu_a > 0, "mtu_a={mtu_a}");
+        assert!(mtu_b > 0, "mtu_b={mtu_b}");
+
+        // A -> B
+        let payload_a = b"datagram-from-a";
+        sa.send_datagram(payload_a).expect("send from A");
+        let got_b = sb.recv_datagram().await.expect("B recv datagram from A");
+        assert_eq!(got_b, payload_a);
+
+        // B -> A
+        let payload_b = b"datagram-from-b";
+        sb.send_datagram(payload_b).expect("send from B");
+        let got_a = sa.recv_datagram().await.expect("A recv datagram from B");
+        assert_eq!(got_a, payload_b);
+
+        pair.a.close().await;
+        pair.b.close().await;
+    }
+
+    #[tokio::test]
+    async fn datagram_recv_blocks_until_data() {
+        let pair = pair().await;
+        let b_id = pair.b.peer_id();
+        let (sa, sb) = tokio::join!(pair.a.dial(b_id, hints(&pair.url)), pair.b.accept());
+        let sa = sa.expect("dial");
+        let sb = sb.expect("accept");
+
+        // Spawn recv in background, send after delay
+        let recv_task = tokio::spawn(async move {
+            sb.recv_datagram().await
+        });
+
+        tokio::time::sleep(Duration::from_millis(100)).await;
+        let payload = b"delayed-datagram";
+        sa.send_datagram(payload).expect("send");
+
+        let result = tokio::time::timeout(Duration::from_secs(2), recv_task)
+            .await
+            .expect("recv should complete within timeout")
+            .expect("join");
+        let got = result.expect("recv datagram");
+        assert_eq!(got, payload);
+
+        pair.a.close().await;
+        pair.b.close().await;
+    }
+
+    #[tokio::test]
+    async fn datagram_and_reliable_stream_coexist() {
+        // Verify datagram API does not interfere with existing reliable stream.
+        let pair = pair().await;
+        let b_id = pair.b.peer_id();
+        let (sa, sb) = tokio::join!(pair.a.dial(b_id, hints(&pair.url)), pair.b.accept());
+        let mut sa = sa.expect("dial");
+        let mut sb = sb.expect("accept");
+
+        // Send text over reliable stream
+        let text = b"reliable-message";
+        sa.send(text).await.expect("send text");
+        let mut got = vec![0u8; text.len()];
+        sb.recv_exact(&mut got).await.expect("recv text");
+        assert_eq!(got, text);
+
+        // Send datagram
+        let dgram = b"unreliable-datagram";
+        sa.send_datagram(dgram).expect("send datagram");
+        let got_dgram = sb.recv_datagram().await.expect("recv datagram");
+        assert_eq!(got_dgram, dgram);
+
+        pair.a.close().await;
+        pair.b.close().await;
     }
 
     #[tokio::test]
